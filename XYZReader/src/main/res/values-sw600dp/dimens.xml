@@ -1,4 +1,9 @@
 <resources>
+    <!-- margin/padding -->
+    <dimen name="space_to_boarder">24dp</dimen>
+    <dimen name="space_to_boarder_minus_gutter">12dp</dimen>
+    <dimen name="space_to_gutter">12dp</dimen> <!-- 8dp for each side = 16dp -->
+
     <!-- detail -->
     <dimen name="detail_title_text_size">42sp</dimen>
     <dimen name="detail_body_text_size">20sp</dimen>
