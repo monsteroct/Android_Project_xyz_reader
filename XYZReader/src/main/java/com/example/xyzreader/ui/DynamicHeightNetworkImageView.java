@@ -21,7 +21,7 @@ public class DynamicHeightNetworkImageView extends NetworkImageView {
     }
 
     public void setAspectRatio(float aspectRatio) {
-        mAspectRatio = aspectRatio;
+        mAspectRatio = aspectRatio; //fix aspect ratio 1.5
         requestLayout();
     }
 
