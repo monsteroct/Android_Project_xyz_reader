@@ -16,12 +16,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.text.Html;
+import android.text.Spanned;
 import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -29,6 +31,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
@@ -208,12 +211,13 @@ public class ArticleDetailFragment extends Fragment implements
         TextView titleView = (TextView) mRootView.findViewById(R.id.article_title);
         TextView bylineView = (TextView) mRootView.findViewById(R.id.article_byline);
         bylineView.setMovementMethod(new LinkMovementMethod());
-        TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
-
-        // TODO: use default font
-//        bodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf"));
+        final TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
+        final ProgressBar progressBar = (ProgressBar) mRootView.findViewById(R.id.pb_detail_loading);
 
         if (mCursor != null) {
+            //start loading
+            progressBar.setVisibility(View.VISIBLE);
+
             mRootView.setAlpha(0);
             mRootView.setVisibility(View.VISIBLE);
             mRootView.animate().alpha(1);
@@ -237,8 +241,22 @@ public class ArticleDetailFragment extends Fragment implements
                                 + "</font>"));
 
             }
-            // https://knowledge.udacity.com/questions/118297 temp solution to solve ANR by clipping to 500 characters to speed it up
-            bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).substring(0,500).replaceAll("(\r\n|\n)", "<br />")));
+
+            new AsyncTask<Void, Void, Spanned>(){
+                // body text takes long time to load, -> load asynchronously to prevent ANR
+
+                @Override
+                protected Spanned doInBackground(Void... voids) {
+                    return Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n\r\n|\n\n)", "<br /><br />"));
+                }
+
+                @Override
+                protected void onPostExecute(Spanned spanned) {
+                    bodyView.setText(spanned);
+                    progressBar.setVisibility(View.INVISIBLE);
+                }
+            }.execute();
+
             ImageLoaderHelper.getInstance(getActivity()).getImageLoader()
                     .get(mCursor.getString(ArticleLoader.Query.PHOTO_URL), new ImageLoader.ImageListener() {
                         @Override

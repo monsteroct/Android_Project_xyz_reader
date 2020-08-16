@@ -36,12 +36,12 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/photo_background_protection" />
 
-                <include layout="@layout/detail_toolbar"/>
+                <include layout="@layout/detail_toolbar" />
 
             </android.support.design.widget.CollapsingToolbarLayout>
         </android.support.design.widget.AppBarLayout>
 
-        <include layout="@layout/detail_content"/>
+        <include layout="@layout/detail_content" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/share_fab"
@@ -51,6 +51,13 @@
             android:layout_margin="@dimen/space_to_boarder"
             android:src="@drawable/ic_share"
             app:fabSize="normal" />
+
+        <ProgressBar
+            android:id="@+id/pb_detail_loading"
+            android:layout_width="@dimen/size_detail_progress_bar"
+            android:layout_height="@dimen/size_detail_progress_bar"
+            android:layout_gravity="center"
+            android:visibility="invisible" />
 
     </android.support.design.widget.CoordinatorLayout>
 

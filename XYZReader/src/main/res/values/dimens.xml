@@ -9,6 +9,7 @@
     <!-- size, width, height -->
     <dimen name="height_detail_expanded_appbar">300dp</dimen>
     <dimen name="width_detail_article_surface">600dp</dimen>
+    <dimen name="size_detail_progress_bar">48dp</dimen>
 
     <!-- elevation, corner round -->
     <dimen name="elevation_standard">4dp</dimen>
