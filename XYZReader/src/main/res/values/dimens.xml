@@ -4,7 +4,12 @@
     <dimen name="space_to_boarder_minus_gutter">8dp</dimen>
     <dimen name="space_to_gutter">8dp</dimen> <!-- 8dp for each side = 16dp -->
     <dimen name="space_to_card_border">16dp</dimen>
-    
+    <dimen name="space_to_system_ui">32dp</dimen> <!-- system ui 24dp + 8dp separation -->
+
+    <!-- size, width, height -->
+    <dimen name="height_detail_expanded_appbar">300dp</dimen>
+
+
     <!-- detail -->
     <dimen name="detail_title_text_size">32sp</dimen>
     <dimen name="detail_body_text_size">22sp</dimen>
