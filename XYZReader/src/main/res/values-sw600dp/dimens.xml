@@ -3,6 +3,11 @@
     <dimen name="space_to_boarder">24dp</dimen>
     <dimen name="space_to_boarder_minus_gutter">12dp</dimen>
     <dimen name="space_to_gutter">12dp</dimen> <!-- 8dp for each side = 16dp -->
+    <dimen name="space_to_system_ui">8dp</dimen> <!-- no system ui consideration in sw600dp -->
+
+    <!-- size, width, height -->
+    <dimen name="height_detail_expanded_appbar">200dp</dimen>
+
 
     <!-- detail -->
     <dimen name="detail_title_text_size">42sp</dimen>

@@ -28,55 +28,12 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/photo_background_protection" />
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/detail_toolbar"
-                android:layout_marginTop="@dimen/space_to_system_ui"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_gravity="bottom"
-                app:layout_collapseMode="pin">
+            <include layout="@layout/detail_toolbar"/>
 
-                <LinearLayout
-                    android:id="@+id/meta_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/article_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@android:color/white"
-                        tools:text="Ebooks, Neither E, Nor Books" />
-
-                    <TextView
-                        android:id="@+id/article_byline"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@android:color/white"
-                        tools:text="Feb 12, 2004 by Cory Doctorow" />
-
-                </LinearLayout>
-            </android.support.v7.widget.Toolbar>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/scrollview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <TextView
-            android:id="@+id/article_body"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/space_to_boarder"
-            android:layout_marginTop="@dimen/space_to_boarder"
-            android:layout_marginEnd="@dimen/space_to_boarder"
-            tools:text="For starters, let me try to summarize the lessons and intuitions\r\nI've had about ebooks from my release of two novels and most of a" />
-
-    </android.support.v4.widget.NestedScrollView>
+    <include layout="@layout/detail_content"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/share_fab"

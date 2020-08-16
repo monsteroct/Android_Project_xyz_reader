@@ -8,7 +8,10 @@
 
     <!-- size, width, height -->
     <dimen name="height_detail_expanded_appbar">300dp</dimen>
+    <dimen name="width_detail_article_surface">600dp</dimen>
 
+    <!-- elevation, corner round -->
+    <dimen name="elevation_standard">4dp</dimen>
 
     <!-- detail -->
     <dimen name="detail_title_text_size">32sp</dimen>
