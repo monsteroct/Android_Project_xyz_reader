@@ -17,39 +17,25 @@
 
 <resources>
 
-    <style name="Theme.Bacon" parent="@style/Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <!-- standardize all text -->
-        <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/colorTextMediumEmphasis</item>
-    </style>
-
-    <style name="Theme.Bacon.Detail" parent="Theme.Bacon">
-        <item name="colorPrimaryDark">@android:color/transparent</item>
-    </style>
-
     <style name="TitleText">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">24sp</item>
         <item name="android:fontFamily">cursive</item>
     </style>
 
     <style name="SubTitleText">
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="CardTitleText">
         <item name="android:textColor">@color/colorTextHighEmphasis</item>
         <item name="android:fontFamily">sans-serif-condensed-medium</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="CardSubTitleText">
         <item name="android:textColor">@color/colorTextHighEmphasis</item>
         <item name="android:fontFamily">sans-serif-condensed</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
 </resources>
