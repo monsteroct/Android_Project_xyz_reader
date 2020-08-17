@@ -10,7 +10,6 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -18,8 +17,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -48,6 +45,9 @@ public class ArticleListActivity extends AppCompatActivity implements
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
 
+    private boolean mIsRefreshing = false;
+    private BroadcastReceiver mRefreshingReceiver;
+
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
     // Use default locale format
     private SimpleDateFormat outputFormat = new SimpleDateFormat();
@@ -62,16 +62,26 @@ public class ArticleListActivity extends AppCompatActivity implements
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        //        final View toolbarContainerView = findViewById(R.id.toolbar_container);
-
+        // swipe refresh layout let user drags down to force page reload
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // user drags down
                 refresh();
             }
         });
+
+        // receiver listen to page update service completion broadcast
+        mRefreshingReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (UpdaterService.BROADCAST_ACTION_STATE_CHANGE.equals(intent.getAction())) {
+                    // UpdateService will sent sticky Intent broadcast once work complete
+                    mIsRefreshing = intent.getBooleanExtra(UpdaterService.EXTRA_REFRESHING, false);
+                    updateRefreshingUI();
+                }
+            }
+        };
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         getLoaderManager().initLoader(0, null, this);
@@ -97,19 +107,6 @@ public class ArticleListActivity extends AppCompatActivity implements
         super.onStop();
         unregisterReceiver(mRefreshingReceiver);
     }
-
-    private boolean mIsRefreshing = false;
-
-    private BroadcastReceiver mRefreshingReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (UpdaterService.BROADCAST_ACTION_STATE_CHANGE.equals(intent.getAction())) {
-                // UpdateService will sent sticky Intent broadcast once work complete
-                mIsRefreshing = intent.getBooleanExtra(UpdaterService.EXTRA_REFRESHING, false);
-                updateRefreshingUI();
-            }
-        }
-    };
 
     private void updateRefreshingUI() {
         mSwipeRefreshLayout.setRefreshing(mIsRefreshing);
@@ -205,9 +202,6 @@ public class ArticleListActivity extends AppCompatActivity implements
             holder.thumbnailView.setAspectRatio(mCursor.getFloat(ArticleLoader.Query.ASPECT_RATIO));
             // set unique transition name
             holder.thumbnailView.setTransitionName(getString(R.string.shared_element_thumbnail_name, getItemId(position)));
-
-            Log.d(TAG, getString(R.string.shared_element_thumbnail_name, getItemId(position)));
-            Log.d(TAG, holder.thumbnailView.getTransitionName());
         }
 
         @Override
