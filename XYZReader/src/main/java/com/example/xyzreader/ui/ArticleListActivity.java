@@ -1,5 +1,6 @@
 package com.example.xyzreader.ui;
 
+import android.app.ActivityOptions;
 import android.app.LoaderManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -156,8 +157,12 @@ public class ArticleListActivity extends AppCompatActivity implements
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    startActivity(new Intent(Intent.ACTION_VIEW,
-                            ItemsContract.Items.buildItemUri(getItemId(vh.getAdapterPosition()))));
+                    ActivityOptions transitionAnimation = ActivityOptions.makeSceneTransitionAnimation(ArticleListActivity.this,
+                            vh.thumbnailView,
+                            vh.thumbnailView.getTransitionName());
+
+                    Intent intent = new Intent(Intent.ACTION_VIEW, ItemsContract.Items.buildItemUri(getItemId(vh.getAdapterPosition())));
+                    startActivity(intent, transitionAnimation.toBundle());
                 }
             });
             return vh;
@@ -198,6 +203,11 @@ public class ArticleListActivity extends AppCompatActivity implements
                     mCursor.getString(ArticleLoader.Query.THUMB_URL),
                     ImageLoaderHelper.getInstance(ArticleListActivity.this).getImageLoader());
             holder.thumbnailView.setAspectRatio(mCursor.getFloat(ArticleLoader.Query.ASPECT_RATIO));
+            // set unique transition name
+            holder.thumbnailView.setTransitionName(getString(R.string.shared_element_thumbnail_name, getItemId(position)));
+
+            Log.d(TAG, getString(R.string.shared_element_thumbnail_name, getItemId(position)));
+            Log.d(TAG, holder.thumbnailView.getTransitionName());
         }
 
         @Override

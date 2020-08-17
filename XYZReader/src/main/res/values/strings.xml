@@ -8,5 +8,7 @@
     <string name="action_share">Share</string>
 
     <string name="up">Up</string>
+    <!-- transition name -->
+    <string name="shared_element_thumbnail_name">shared_element_thumbnail_pos_%1$d</string>
 
 </resources>

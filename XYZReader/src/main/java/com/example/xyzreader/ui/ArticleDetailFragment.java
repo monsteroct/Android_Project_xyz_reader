@@ -18,6 +18,7 @@ import java.util.GregorianCalendar;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +27,8 @@ import android.text.Html;
 import android.text.Spanned;
 import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
+import android.transition.TransitionInflater;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -91,6 +94,10 @@ public class ArticleDetailFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActivity().postponeEnterTransition();
+
+        setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.shared_image_transition));
+        setSharedElementReturnTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.shared_image_transition));
 
         if (getArguments().containsKey(ARG_ITEM_ID)) {
             mItemId = getArguments().getLong(ARG_ITEM_ID);
@@ -116,6 +123,7 @@ public class ArticleDetailFragment extends Fragment implements
         // fragments because their mIndex is -1 (haven't been added to the activity yet). Thus,
         // we do this in onActivityCreated.
         getLoaderManager().initLoader(0, null, this);
+
     }
 
     @Override
@@ -158,10 +166,14 @@ public class ArticleDetailFragment extends Fragment implements
             }
         });
 
+        mPhotoView.setTransitionName(getString(R.string.shared_element_thumbnail_name, mItemId));
+        Log.d(TAG, getString(R.string.shared_element_thumbnail_name, mItemId));
         bindViews();
 //        updateStatusBar();
+
         return mRootView;
     }
+
 
     private void updateStatusBar() {
         int color = 0;
@@ -254,6 +266,7 @@ public class ArticleDetailFragment extends Fragment implements
                 protected void onPostExecute(Spanned spanned) {
                     bodyView.setText(spanned);
                     progressBar.setVisibility(View.INVISIBLE);
+
                 }
             }.execute();
 
@@ -269,6 +282,8 @@ public class ArticleDetailFragment extends Fragment implements
 //                                mRootView.findViewById(R.id.meta_bar)
 //                                        .setBackgroundColor(mMutedColor);
 //                                updateStatusBar();
+                                getActivity().startPostponedEnterTransition();
+                                Log.d(TAG, mPhotoView.getScaleType()+"");
                             }
                         }
 
@@ -278,7 +293,7 @@ public class ArticleDetailFragment extends Fragment implements
                         }
                     });
         } else {
-            mRootView.setVisibility(View.GONE);
+//            mRootView.setVisibility(View.GONE);
             titleView.setText("N/A");
             bylineView.setText("N/A" );
             bodyView.setText("N/A");
