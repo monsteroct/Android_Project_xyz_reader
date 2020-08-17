@@ -5,7 +5,6 @@ import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ShareCompat;
@@ -13,7 +12,6 @@ import android.text.Html;
 import android.text.Spanned;
 import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
-import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,10 +20,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
@@ -78,10 +75,6 @@ public class ArticleDetailFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // postpone transition till image loading complete
-        getActivity().postponeEnterTransition();
-        setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.shared_image_transition));
-        setSharedElementReturnTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.shared_image_transition));
 
         if (getArguments().containsKey(ARG_ITEM_ID)) {
             mItemId = getArguments().getLong(ARG_ITEM_ID);
@@ -152,10 +145,33 @@ public class ArticleDetailFragment extends Fragment implements
         }
 
         if (mCursor != null) {
+            Log.d(TAG, "start loading");
             //start loading
-            progressBar.setVisibility(View.VISIBLE);
+            showLoadingIndicator(true);
 
+            // load image
+            Picasso.get()
+                    .load(mCursor.getString(ArticleLoader.Query.PHOTO_URL))
+                    .error(R.drawable.ic_broken_image)
+                    .into(mPhotoView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            getActivity().startPostponedEnterTransition();
+                            showLoadingIndicator(false);
+                            Log.d(TAG, "image loading done");
+                            getActivity().startPostponedEnterTransition();
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            showLoadingIndicator(false);
+                        }
+                    });
+
+            // load title
             titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
+
+            // load subtitle
             Date publishedDate = parsePublishedDate();
             if (!publishedDate.before(START_OF_EPOCH.getTime())) {
                 bylineView.setText(Html.fromHtml(
@@ -176,6 +192,7 @@ public class ArticleDetailFragment extends Fragment implements
 
             }
 
+            // load body
             new AsyncTask<Void, Void, Spanned>(){
                 // body text takes long time to load, -> load asynchronously to prevent ANR
 
@@ -187,20 +204,23 @@ public class ArticleDetailFragment extends Fragment implements
                 @Override
                 protected void onPostExecute(Spanned spanned) {
                     bodyView.setText(spanned);
-                    progressBar.setVisibility(View.INVISIBLE);
-
                 }
             }.execute();
 
-            Picasso.get()
-                    .load(mCursor.getString(ArticleLoader.Query.PHOTO_URL))
-                    .error(R.drawable.ic_broken_image)
-                    .into(mPhotoView);
-
-//            getActivity().startPostponedEnterTransition();
 
         } else {
+            Log.d(TAG, "empty cursor");
+            showLoadingIndicator(true);
+        }
+    }
+
+    private void showLoadingIndicator(boolean isLoading) {
+        if (isLoading){
+            mRootView.setAlpha(0.5f);
             progressBar.setVisibility(View.VISIBLE);
+        } else {
+            mRootView.setAlpha(1);
+            progressBar.setVisibility(View.GONE);
         }
     }
 
@@ -223,6 +243,7 @@ public class ArticleDetailFragment extends Fragment implements
             Log.e(TAG, "Error reading item detail cursor");
             mCursor.close();
             mCursor = null;
+            getLoaderManager().initLoader(0, null, this);
         }
 
         bindViews();
