@@ -3,8 +3,9 @@
     <dimen name="space_to_boarder">16dp</dimen>
     <dimen name="space_to_boarder_minus_gutter">8dp</dimen>
     <dimen name="space_to_gutter">8dp</dimen> <!-- 8dp for each side = 16dp -->
-    <dimen name="space_to_card_border">16dp</dimen>
-    <dimen name="space_to_system_ui">32dp</dimen> <!-- system ui 24dp + 8dp separation -->
+    <dimen name="space_text_to_card_border">16dp</dimen>
+    <dimen name="space_toolbar_to_system_ui">32dp</dimen> <!-- system ui 24dp + 8dp separation -->
+    <dimen name="space_logo_to_boarder_side">0dp</dimen>
 
     <!-- size, width, height -->
     <dimen name="height_detail_expanded_appbar">300dp</dimen>
@@ -13,14 +14,5 @@
 
     <!-- elevation, corner round -->
     <dimen name="elevation_standard">4dp</dimen>
-
-    <!-- detail -->
-    <dimen name="detail_title_text_size">32sp</dimen>
-    <dimen name="detail_body_text_size">22sp</dimen>
-    <item name="detail_body_line_spacing_multiplier" format="float" type="fraction">1.25</item>
-
-    <dimen name="fab_elevation">2dp</dimen>
-    <dimen name="fab_press_translation_z">6dp</dimen>
-    <dimen name="fab_margin">24dp</dimen>
 
 </resources>

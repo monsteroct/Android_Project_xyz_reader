@@ -3,15 +3,10 @@
     <dimen name="space_to_boarder">24dp</dimen>
     <dimen name="space_to_boarder_minus_gutter">12dp</dimen>
     <dimen name="space_to_gutter">12dp</dimen> <!-- 8dp for each side = 16dp -->
-    <dimen name="space_to_system_ui">8dp</dimen> <!-- no system ui consideration in sw600dp -->
+    <dimen name="space_toolbar_to_system_ui">8dp</dimen> <!-- toolbar is separated in sw600dp -->
+    <dimen name="space_logo_to_boarder_side">52dp</dimen>
 
     <!-- size, width, height -->
     <dimen name="height_detail_expanded_appbar">200dp</dimen>
 
-
-    <!-- detail -->
-    <dimen name="detail_title_text_size">42sp</dimen>
-    <dimen name="detail_body_text_size">20sp</dimen>
-    <item name="detail_body_line_spacing_multiplier" format="float" type="fraction">1.3</item>
-    <dimen name="fab_margin">24dp</dimen>
 </resources>

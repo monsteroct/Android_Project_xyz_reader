@@ -19,8 +19,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
                 android:layout_gravity="bottom"
-                android:layout_marginLeft="@dimen/list_toolbar_side_margin"
-                android:layout_marginRight="@dimen/list_toolbar_side_margin"
+                android:layout_marginLeft="@dimen/space_logo_to_boarder_side"
+                android:layout_marginRight="@dimen/space_logo_to_boarder_side"
                 app:layout_collapseMode="pin"
                 app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 

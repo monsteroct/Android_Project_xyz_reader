@@ -27,8 +27,11 @@
         <item name="android:textColor">@color/colorTextMediumEmphasis</item>
         <!-- transition-->
         <item name="android:windowActivityTransitions">true</item>
-        <item name="android:windowSharedElementEnterTransition">@transition/shared_image_transition</item>
-        <item name="android:windowSharedElementExitTransition">@transition/shared_image_transition</item>
+        <item name="android:windowSharedElementEnterTransition">
+            @transition/shared_image_transition
+        </item>
+        <item name="android:windowSharedElementExitTransition">@transition/shared_image_transition
+        </item>
     </style>
 
     <style name="Theme.Bacon.Detail" parent="Theme.Bacon">

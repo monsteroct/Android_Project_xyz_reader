@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     android:layout_gravity="bottom"
-    android:layout_marginTop="@dimen/space_to_system_ui"
+    android:layout_marginTop="@dimen/space_toolbar_to_system_ui"
     app:layout_collapseMode="pin">
 
     <LinearLayout
@@ -17,18 +17,18 @@
 
         <TextView
             android:id="@+id/article_title"
+            style="@style/TitleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
-            style="@style/TitleText"
             tools:text="Ebooks, Neither E, Nor Books" />
 
         <TextView
             android:id="@+id/article_byline"
+            style="@style/SubTitleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
-            style="@style/SubTitleText"
             tools:text="Feb 12, 2004 by Cory Doctorow" />
 
     </LinearLayout>
