@@ -26,6 +26,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
+import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -45,9 +46,13 @@ public class ArticleDetailFragment extends Fragment implements
 
     private Cursor mCursor;
     private long mItemId;
-    private View mRootView;
 
+    private View mRootView;
     private ImageView mPhotoView;
+    private TextView titleView;
+    private TextView bylineView;
+    private TextView bodyView;
+    private ProgressBar progressBar;
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
     // Use default locale format
@@ -117,6 +122,14 @@ public class ArticleDetailFragment extends Fragment implements
             }
         });
 
+
+        // init View references
+        titleView = (TextView) mRootView.findViewById(R.id.article_title);
+        bylineView = (TextView) mRootView.findViewById(R.id.article_byline);
+        bylineView.setMovementMethod(new LinkMovementMethod());
+        bodyView = (TextView) mRootView.findViewById(R.id.article_body);
+        progressBar = (ProgressBar) mRootView.findViewById(R.id.pb_detail_loading);
+
         bindViews();
         return mRootView;
     }
@@ -138,19 +151,10 @@ public class ArticleDetailFragment extends Fragment implements
             return;
         }
 
-        TextView titleView = (TextView) mRootView.findViewById(R.id.article_title);
-        TextView bylineView = (TextView) mRootView.findViewById(R.id.article_byline);
-        bylineView.setMovementMethod(new LinkMovementMethod());
-        final TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
-        final ProgressBar progressBar = (ProgressBar) mRootView.findViewById(R.id.pb_detail_loading);
-
         if (mCursor != null) {
             //start loading
             progressBar.setVisibility(View.VISIBLE);
 
-            mRootView.setAlpha(0);
-            mRootView.setVisibility(View.VISIBLE);
-            mRootView.animate().alpha(1);
             titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
             Date publishedDate = parsePublishedDate();
             if (!publishedDate.before(START_OF_EPOCH.getTime())) {
@@ -188,29 +192,15 @@ public class ArticleDetailFragment extends Fragment implements
                 }
             }.execute();
 
-            ImageLoaderHelper.getInstance(getActivity()).getImageLoader()
-                    .get(mCursor.getString(ArticleLoader.Query.PHOTO_URL), new ImageLoader.ImageListener() {
-                        @Override
-                        public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
-                            Bitmap bitmap = imageContainer.getBitmap();
-                            if (bitmap != null) {
-                                mPhotoView.setImageBitmap(imageContainer.getBitmap());
+            Picasso.get()
+                    .load(mCursor.getString(ArticleLoader.Query.PHOTO_URL))
+                    .error(R.drawable.ic_broken_image)
+                    .into(mPhotoView);
 
-                                getActivity().startPostponedEnterTransition();
-                                Log.d(TAG, mPhotoView.getScaleType()+"");
-                            }
-                        }
+//            getActivity().startPostponedEnterTransition();
 
-                        @Override
-                        public void onErrorResponse(VolleyError volleyError) {
-
-                        }
-                    });
         } else {
-            mRootView.setVisibility(View.GONE);
-            titleView.setText("N/A");
-            bylineView.setText("N/A" );
-            bodyView.setText("N/A");
+            progressBar.setVisibility(View.VISIBLE);
         }
     }
 
