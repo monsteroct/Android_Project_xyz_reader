@@ -8,6 +8,9 @@
     <string name="action_share">Share</string>
 
     <string name="up">Up</string>
+    <!-- message -->
+    <string name="msg_share_fab">share this with your friends!</string>
+
     <!-- transition name -->
     <string name="shared_element_thumbnail_name">shared_element_thumbnail_pos_%1$d</string>
 
