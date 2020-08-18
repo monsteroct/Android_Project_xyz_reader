@@ -8,8 +8,11 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ShareCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.text.Spanned;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -27,8 +30,10 @@ import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 /**
  * A fragment representing a single Article detail screen. This fragment is
@@ -37,9 +42,10 @@ import java.util.GregorianCalendar;
  */
 public class ArticleDetailFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String TAG = "ArticleDetailFragment";
 
+    private static final String TAG = "ArticleDetailFragment";
     public static final String ARG_ITEM_ID = "item_id";
+    public static final String BODY_TEXT_DELIMINATOR = "@DeLiMiNaTor";
 
     private Cursor mCursor;
     private long mItemId;
@@ -48,8 +54,9 @@ public class ArticleDetailFragment extends Fragment implements
     private ImageView mPhotoView;
     private TextView titleView;
     private TextView bylineView;
-    private TextView bodyView;
     private ProgressBar progressBar;
+    private RecyclerView bodyRecyclerView;
+    private BodyTextAdapter bodyTextAdapter;
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
     // Use default locale format
@@ -120,8 +127,13 @@ public class ArticleDetailFragment extends Fragment implements
         titleView = (TextView) mRootView.findViewById(R.id.article_title);
         bylineView = (TextView) mRootView.findViewById(R.id.article_byline);
         bylineView.setMovementMethod(new LinkMovementMethod());
-        bodyView = (TextView) mRootView.findViewById(R.id.article_body);
+        bodyRecyclerView = (RecyclerView) mRootView.findViewById(R.id.rv_article_body);
         progressBar = (ProgressBar) mRootView.findViewById(R.id.pb_detail_loading);
+
+        // setup RecyclerView
+        bodyRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        bodyTextAdapter = new BodyTextAdapter(new ArrayList<Spannable>());
+        bodyRecyclerView.setAdapter(bodyTextAdapter);
 
         bindViews();
         return mRootView;
@@ -156,7 +168,6 @@ public class ArticleDetailFragment extends Fragment implements
                     .into(mPhotoView, new Callback() {
                         @Override
                         public void onSuccess() {
-                            getActivity().startPostponedEnterTransition();
                             showLoadingIndicator(false);
                             Log.d(TAG, "image loading done");
                             getActivity().startPostponedEnterTransition();
@@ -192,20 +203,8 @@ public class ArticleDetailFragment extends Fragment implements
 
             }
 
-            // load body
-            new AsyncTask<Void, Void, Spanned>(){
-                // body text takes long time to load, -> load asynchronously to prevent ANR
-
-                @Override
-                protected Spanned doInBackground(Void... voids) {
-                    return Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n\r\n|\n\n)", "<br /><br />"));
-                }
-
-                @Override
-                protected void onPostExecute(Spanned spanned) {
-                    bodyView.setText(spanned);
-                }
-            }.execute();
+            // body text takes long time to load, -> load and process asynchronously to prevent ANR
+            new textProcessAsyncTask().execute(mCursor.getString(ArticleLoader.Query.BODY));
 
 
         } else {
@@ -253,6 +252,29 @@ public class ArticleDetailFragment extends Fragment implements
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         mCursor = null;
         bindViews();
+    }
+
+    class textProcessAsyncTask extends AsyncTask<String, Void, List<Spannable>>{
+
+        @Override
+        protected List<Spannable> doInBackground(String... strings) {
+            CharSequence[] textPieces = strings[0]
+                    .replaceAll("(\r\n\r\n|\n\n)", "<br />" + BODY_TEXT_DELIMINATOR)
+                    .split(BODY_TEXT_DELIMINATOR);
+
+            List<Spannable> spannableList = new ArrayList<>();
+            for (CharSequence piece : textPieces){
+                // CharSequence -> String -> resolve html tags by Html.fromHtml (return Spanned)
+                // Spanned -> SpannableString (implementation of Spannable)
+                spannableList.add(new SpannableString(Html.fromHtml(piece.toString())));
+            }
+            return spannableList;
+        }
+
+        @Override
+        protected void onPostExecute(List<Spannable> spannables) {
+            bodyTextAdapter.setSpannableList(spannables);
+        }
     }
 
 }
