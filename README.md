@@ -1,4 +1,4 @@
-# XYZ Reader
+# Make it Material
 The project is a part of Udacity Android Developer Nanodegree. The project goal is to improve app's design of a functional mock RSS feed reader app, and make it follow [Material design guideline](https://material.io/).  
 
 ### Before (starter code)
